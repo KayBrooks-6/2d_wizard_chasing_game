@@ -1,5 +1,6 @@
 import pygame 
 from pygame.sprite import Sprite
+import random
 
 class Monster(Sprite):
     """A class to represent a single monster."""
@@ -17,14 +18,29 @@ class Monster(Sprite):
             self.settings.enemy_size
         )
 
-        # Starting position in the top left.
-        self.rect.x = self.rect.width
-        self.rect.y = self.rect.height
+        # Random monster position along the sides and top of the screen.
+        screen_h = self.settings.screen_height
+        screen_w = self.settings.screen_width
+
+        edge = random.choice(["top", "left", "right"])
+
+        if edge == "top":
+            self.rect.x = random.randint(0, screen_w - self.rect.width)
+            self.rect.y = 0
+        elif edge == "left":
+            self.rect.x = 0
+            self.rect.y = random.randint(0, screen_h - self.rect.height)
+        else: 
+            self.rect.x = screen_w - self.rect.width
+            self.rect.y = random.randint(0, screen_h - self.rect.height)
 
         # Store the monster's exact horizontal position.
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
+        self.color = self.settings.enemy_color
+        self.speed = self.settings.enemy_speed
+
     def draw(self):
         """Draw the monster as a red square."""
-        pygame.draw.rect(self.screen, self.settings.enemy_color, self.rect)
+        pygame.draw.rect(self.screen, self.color, self.rect)

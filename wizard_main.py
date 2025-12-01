@@ -90,9 +90,9 @@ class WizardGame:
     
     def _create_enemies(self):
         """Create a horde of swarming monsters."""
-        # Make one monster. 
-        enemy = Monster(self)
-        self.enemies.add(enemy)
+        for _ in range(10):
+            enemy = Monster(self)
+            self.enemies.add(enemy)
     
     def _fire_spell(self):
         """Create a new spell and add it to the spells group if under a limit"""
