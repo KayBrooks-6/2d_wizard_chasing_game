@@ -4,6 +4,7 @@ import pygame
 from settings import Settings
 from wizard import Wizard
 from spell import Spell
+from monster import Monster
 
 class WizardGame:
     """Overall class to manage game assets and resources."""
@@ -17,9 +18,11 @@ class WizardGame:
         self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Wizard Survival Game")
 
-        # Create the wizard and spell objects.
+        # Create the wizard, spells, and enemies objects.
         self.wizard = Wizard(self)
         self.spells = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self._create_enemies()
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -85,6 +88,12 @@ class WizardGame:
                 spell.rect.left > self.settings.screen_width):
                 self.spells.remove(spell)
     
+    def _create_enemies(self):
+        """Create a horde of swarming monsters."""
+        # Make one monster. 
+        enemy = Monster(self)
+        self.enemies.add(enemy)
+    
     def _fire_spell(self):
         """Create a new spell and add it to the spells group if under a limit"""
         if len(self.spells) < self.settings.spells_allowed:
@@ -100,6 +109,11 @@ class WizardGame:
         self.wizard.blitme()
         for spell in self.spells.sprites():
             spell.draw()
+        
+        # Draw the enemies.
+        for enemy in self.enemies.sprites():
+            enemy.draw()
+
         # Make the most recently drawn screen visible.
         pygame.display.flip()
 

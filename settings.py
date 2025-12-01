@@ -20,3 +20,8 @@ class Settings:
         self.spell_height = 12
         self.spell_color = (255, 220, 0)
         self.spells_allowed = 5
+
+        # Enemy settings
+        self.enemy_speed = 1.5
+        self.enemy_size = 28
+        self.enemy_color = (200, 60, 60)
