@@ -86,9 +86,10 @@ class WizardGame:
                 self.spells.remove(spell)
     
     def _fire_spell(self):
-        """Create a new spell and add it to the spells group."""
-        new_spell = Spell(self)
-        self.spells.add(new_spell)
+        """Create a new spell and add it to the spells group if under a limit"""
+        if len(self.spells) < self.settings.spells_allowed:
+            new_spell = Spell(self)
+            self.spells.add(new_spell)
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""

@@ -30,6 +30,10 @@ class Wizard:
         self.moving_up = False
         self.moving_down = False
 
+    # Facing direction for spells (default up)
+        self.dir_x = 0.0
+        self.dir_y = -1.0
+
     def blitme(self):
         """Draw the wizard at its current location and as a simple rectangle."""
         pygame.draw.rect(self.screen, self.color, self.rect)
@@ -39,14 +43,28 @@ class Wizard:
         # Horizontal movement
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.wizard_speed
+            self.dir_x = 1.0
+            self.dir_y = 0.0
+            moved = True
+
         if self.moving_left and self.rect.left > 0:
             self.x -= self.settings.wizard_speed
+            self.dir_x = -1.0
+            self.dir_y = 0.0
+            moved = True
 
         # Vertical movement
         if self.moving_up and self.rect.top > 0:
             self.y -= self.settings.wizard_speed
+            self.dir_x = 0.0
+            self.dir_y = -1.0
+            moved = True
+
         if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.wizard_speed
+            self.dir_x = 0.0
+            self.dir_y = 1.0
+            moved = True
 
         # Update rect from float positions
         self.rect.x = int(self.x)
