@@ -27,6 +27,7 @@ class WizardGame:
             self._check_events()
             self.wizard.update()
             self.spells.update()
+            self._cleanup_offscreen_spells()
             self._update_screen()
             self.clock.tick(60)
 
@@ -69,6 +70,20 @@ class WizardGame:
         elif event.key == pygame.K_q:
             pygame.quit()
             sys.exit()
+
+    def _cleanup_offscreen_spells(self):
+        """
+        Update spell positions and remove those that have left the screen.
+        """
+        self.spells.update()
+
+        # Remove spells that move off the screen
+        for spell in self.spells.copy():
+            if (spell.rect.bottom < 0 or
+                spell.rect.top > self.settings.screen_height or
+                spell.rect.right < 0 or
+                spell.rect.left > self.settings.screen_width):
+                self.spells.remove(spell)
     
     def _fire_spell(self):
         """Create a new spell and add it to the spells group."""
@@ -82,10 +97,8 @@ class WizardGame:
 
         # Draw the wizard.
         self.wizard.blitme()
-
         for spell in self.spells.sprites():
             spell.draw()
-
         # Make the most recently drawn screen visible.
         pygame.display.flip()
 
