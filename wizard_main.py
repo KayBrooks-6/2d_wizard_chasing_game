@@ -1,10 +1,12 @@
 import sys
 import pygame
+from time import sleep
 
 from settings import Settings
 from wizard import Wizard
 from spell import Spell
 from monster import Monster
+from game_stats import GameStats
 
 class WizardGame:
     """Overall class to manage game assets and resources."""
@@ -17,6 +19,9 @@ class WizardGame:
         self.screen = pygame.display.set_mode((
         self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Wizard Survival Game")
+
+        # Create an instance to store game statistics.
+        self.stats = GameStats(self)
 
         # Create the wizard, spells, and enemies objects.
         self.wizard = Wizard(self)
@@ -111,6 +116,10 @@ class WizardGame:
         for enemy in self.enemies:
             enemy.update(self.wizard)
 
+        # If a monster touches the wizard, detect it and print a message.
+        if pygame.sprite.spritecollideany(self.wizard, self.enemies):
+            self._wizard_hit()
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the hoop.
@@ -127,6 +136,22 @@ class WizardGame:
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
+
+    def _wizard_hit(self):
+        """Respond to the wizard being hit by the monsters."""
+        # Adjust the amount of lives the wizard has. 
+        self.stats.wizard_lives_left -= 1
+
+        # Get rid of any spells and enemies.
+        self.spells.empty()
+        self.enemies.empty()
+
+        # Make more monsters after deleting them all.
+        self._create_enemies()
+
+        # Pause the screen for a moment.
+        sleep(1.0)
+    
 
 if __name__ == '__main__':
     # Make a game instance, and run the game.

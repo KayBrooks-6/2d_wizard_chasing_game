@@ -13,6 +13,7 @@ class Settings:
         self.wizard_width = 30
         self.wizard_height = 30
         self.wizard_color = (50, 150, 255)
+        self.wizard_lives = 3
 
         # Spell settings
         self.spell_speed = 6.0
