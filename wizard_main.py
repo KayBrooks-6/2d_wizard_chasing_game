@@ -20,6 +20,9 @@ class WizardGame:
         self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Wizard Survival Game")
 
+        # Start the game in an active state to allow for 'Game Over'.
+        self.game_active = True
+
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
 
@@ -33,10 +36,11 @@ class WizardGame:
         """Start the main loop for the game."""
         while True:
             self._check_events()
-            self.wizard.update()
-            self._cleanup_offscreen_spells()
-            self._update_enemies()
-            self._create_enemies()
+            if self.game_active:
+                self.wizard.update()
+                self._cleanup_offscreen_spells()
+                self._update_enemies()
+                self._create_enemies()
             self._update_screen()
             self.clock.tick(60)
 
@@ -139,19 +143,15 @@ class WizardGame:
 
     def _wizard_hit(self):
         """Respond to the wizard being hit by the monsters."""
-        # Adjust the amount of lives the wizard has. 
-        self.stats.wizard_lives_left -= 1
-
-        # Get rid of any spells and enemies.
-        self.spells.empty()
-        self.enemies.empty()
-
-        # Make more monsters after deleting them all.
-        self._create_enemies()
-
-        # Pause the screen for a moment.
-        sleep(1.0)
-    
+        if self.stats.wizard_lives_left > 0:
+            # Adjust the amount of lives the wizard has. 
+            self.stats.wizard_lives_left -= 1
+            self.spells.empty()
+            self.enemies.empty()
+            self._create_enemies()
+            sleep(1.0)
+        else:
+            self.game_active = False
 
 if __name__ == '__main__':
     # Make a game instance, and run the game.
