@@ -27,3 +27,4 @@ class Settings:
         self.enemy_size = 28
         self.enemy_color = (200, 60, 60)
         self.max_enemies = 10
+        self.enemy_points = 10

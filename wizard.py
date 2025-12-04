@@ -69,3 +69,10 @@ class Wizard:
         # Update rect from float positions
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
+
+    def center_wizard_position(self):
+        """When the game is over, place the wizard at the center position."""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
+        

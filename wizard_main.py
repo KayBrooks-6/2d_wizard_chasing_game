@@ -23,6 +23,8 @@ class WizardGame:
         # Start the game in an active state to allow for 'Game Over'.
         self.game_active = True
 
+        self.font = pygame.font.SysFont(None, 48)
+
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
@@ -80,7 +82,10 @@ class WizardGame:
         elif event.key == pygame.K_DOWN:
             self.wizard.moving_down = True
         elif event.key == pygame.K_SPACE:
-                self._fire_spell()
+                if self.game_active:
+                    self._fire_spell()
+                else:
+                    self._restart_game()
         elif event.key == pygame.K_q:
             pygame.quit()
             sys.exit()
@@ -103,6 +108,10 @@ class WizardGame:
         collisions = pygame.sprite.groupcollide(
             self.spells, self.enemies, True, True
         )
+
+        if collisions:
+            self.stats.score += self.settings.enemy_points
+            self.sb.prep_score()
     
     def _create_enemies(self):
         """Create a horde of swarming monsters and make sure it stays at max."""
@@ -116,6 +125,29 @@ class WizardGame:
             new_spell = Spell(self)
             self.spells.add(new_spell)
 
+    def _restart_game(self):
+        """Reset everything for a game."""
+        self.game_active = True
+        self.stats.wizard_lives_left = self.settings.wizard_lives
+        self.stats.reset_stats()
+        self.sb.prep_score()
+        self.spells.empty()
+        self.enemies.empty()
+        self.wizard.center_wizard_position()
+    
+    def _restart_message(self):
+        """Show a message for the player to press the space bar to restart."""
+        restart_message = "Good job! Press SPACE to restart."
+        message_surface = self.font.render(
+            restart_message, True, (255, 80, 80)
+        )
+        message_rect = message_surface.get_rect(
+            center=self.screen.get_rect().center
+        )
+        self.screen.blit(message_surface, message_rect)
+        pygame.display.flip()
+        
+
     def _update_enemies(self):
         """Update the enemies to make them move towards the wizard."""
         for enemy in self.enemies:
@@ -127,6 +159,9 @@ class WizardGame:
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
+        if not self.game_active:
+            return
+
         # Redraw the screen during each pass through the hoop.
         self.screen.fill(self.settings.bg_color)
 
@@ -161,6 +196,7 @@ class WizardGame:
             sleep(1.0)
         else:
             self.game_active = False
+            self._restart_message()
 
 if __name__ == '__main__':
     # Make a game instance, and run the game.
