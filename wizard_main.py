@@ -33,6 +33,8 @@ class WizardGame:
         self.wizard = Wizard(self)
         self.spells = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
+
+        self.last_enemy_spawn = pygame.time.get_ticks()
         self._create_enemies()
 
     def run_game(self):
@@ -119,7 +121,10 @@ class WizardGame:
     
     def _create_enemies(self):
         """Create a horde of swarming monsters and make sure it stays at max."""
-        while len(self.enemies) < self.settings.max_enemies:
+        now = pygame.time.get_ticks()
+        if (now - self.last_enemy_spawn >= self.settings.enemy_spawn_delay_ms
+            and len(self.enemies) < self.settings.max_enemies):
+            self.last_enemy_spawn = now
             enemy = Monster(self)
             self.enemies.add(enemy)
         
@@ -194,8 +199,7 @@ class WizardGame:
             self.sb.prep_lives()
 
             self.spells.empty()
-            self.enemies.empty()
-            self._create_enemies()
+            self.wizard.center_wizard_position()
             sleep(1.0)
         else:
             self.game_active = False

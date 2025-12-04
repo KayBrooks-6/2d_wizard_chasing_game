@@ -28,3 +28,4 @@ class Settings:
         self.enemy_color = (200, 60, 60)
         self.max_enemies = 10
         self.enemy_points = 10
+        self.enemy_spawn_delay_ms = 1000
